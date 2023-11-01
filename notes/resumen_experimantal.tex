@@ -1,0 +1,123 @@
+\documentclass[10pt]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[OT1]{fontenc}
+\usepackage{amsfonts, amsmath, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{xcolor}
+
+\newcounter{countCode}
+
+\lstnewenvironment{code} [1][caption=Ponme caption, label=default]{%
+\renewcommand*{\lstlistingname}{Listado} 
+\setcounter{lstlisting}{\value{countCode}}
+\lstset{ %
+		language=java,
+		basicstyle=\ttfamily\footnotesize,      	% the size of the fonts that are used for the code
+		numbers=left,                   			% where to put the line-numbers
+		numberstyle=\sc,      						% the size of the fonts that are used for the line-numbers
+		stepnumber=1,                  				% the step between two line-numbers. 
+		numbersep=5pt,                 				% how far the line-numbers are from the code
+		numberstyle=\color{red!50!blue},
+		backgroundcolor=\color{lightgray!20},
+		rulecolor=\color{blue},
+		keywordstyle=\color{red}\bfseries,
+		showspaces=false,               			% show spaces adding particular underscores
+		showstringspaces=false,         			% underline spaces within strings
+		showtabs=false,                 			% show tabs within strings adding particular underscores
+		frame=single,                   			% adds a frame around the code
+		framexleftmargin=0mm,
+		numberblanklines=false,
+		xleftmargin=5pt,
+		breaklines=true,
+		breakatwhitespace=true,
+		breakautoindent=true,
+		captionpos=t,
+		texcl=true,
+		tabsize=2,                      % sets default tabsize to 3 spaces
+		extendedchars=true,
+		inputencoding=utf8, 
+		escapechar=\%,
+		morekeywords={print, println, size, background, strokeWeight, fill, line, rect, ellipse, triangle, arc, save, PI, HALF_PI, QUARTER_PI, TAU, TWO_PI, width, height,},
+		emph=[1]{print,println,}, emphstyle=[1]{\color{blue}}, % Mis palabras clave.
+		emph=[2]{width,height,}, emphstyle=[2]{\bf\color{violet}}, % Mis palabras clave.
+		emph=[3]{PI, HALF_PI, QUARTER_PI, TAU, TWO_PI}, emphstyle=[3]\color{orange!50!violet}, % Mis palabras clave.
+		emph=[4]{line, rect, ellipse, triangle, arc,}, emphstyle=[4]\color{green!70!black}, % Mis palabras clave.
+		#1}}{\addtocounter{countCode}{1}}
+
+
+
+\title{Filtros de Kalman}
+\author{José Ramírez-Gómez}
+\date{\today}
+
+\begin{document}
+	\maketitle
+	\tableofcontents 
+	\newpage
+	
+%\begin{abstract}
+%	\noindent En este documento se explicara que es un filtro de Kalman, se hará su %deducción y se mostrarán sus aplicaciones. 
+%\end{abstract}
+
+\section{Introducción}
+	\noindent El filtro de Kalman es un estimador lineal discreto que permite la reconstrucción del estado a partir de mediciones ruidosas. Aunque existían otros filtros previos, el filtro de Kalman aporta una unificación de los métodos que existían previamente, un algoritmo que no se basa en la transformada de Fourier y que además es estable, robusto y confiable.\\
+	
+	\noindent El filtro es un estimador de tipo predictor-corrector que usa información de diversas fuentes para reducir la incertidumbre de las mediciones y lograr una mejor estimación del estado:
+		
+		\begin{itemize}
+			\item Conocimiento del sistema.
+			\item Dinámica de los dispositivos de medición.
+			\item Descripción estadística de los ruidos del sistema.
+			\item Información de las condiciones iniciales.
+		\end{itemize}
+
+\section{Deducción del Filtro de Kalman}
+	\noindent Para la deducción del filtro de Kalman se deben hacer algunas suposiciones:
+		
+		\begin{enumerate}
+			\item El modelo es lineal.
+			\item El modelo es observable.
+			\item El ruido blanco de las mediciones $\mathbf{v}$ y en las variables de estado $\mathbf{w}$ es gaussiano.
+		\end{enumerate}
+	
+	\noindent Se parte del siguiente modelo:
+	
+		\begin{equation*}
+			\begin{cases}
+				\mathbf{x}(k+1) = \mathbf{\Phi x}(k) + \mathbf{\Gamma u}(k) + \mathbf{G w}(k)\\
+				\mathbf{y}(k) = \mathbf{C x}(k) + \mathbf{v}(k)
+			\end{cases}
+		\end{equation*}
+	
+		\begin{equation*}
+			p(\mathbf{v}) \sim N(0,\mathbf{R}) \hspace{1cm} p(\mathbf{w}) \sim 	N(0,\mathbf{Q}) \hspace{1cm} E\mathbf{v}(k)\mathbf{w}^{T}(k) = 0
+		\end{equation*}
+	
+	\noindent Donde $\mathbf{P, Q, R}$ son la matriz de covarianzas del estado, la matriz de covarianzas del ruido del proceso y la matriz de covarianzas del ruido de medición. Estas matrices se pueden calcular así:
+	
+		\begin{equation*}
+			\begin{cases}
+				\mathbf{P}(k) = E[\mathbf{x}(k) - \hat{\mathbf{x}}(k)][\mathbf{x}(k) - \hat{\mathbf{x}}(k)]^{T}\\
+				\mathbf{Q}(k) = E\mathbf{w}(k)\mathbf{w}^{T}(k) \\
+				\mathbf{R} = E\mathbf{v}(k)\mathbf{v}^{T}(k)
+			\end{cases}
+		\end{equation*}	
+	
+	\noindent La ecuación de predicción del estado $\hat{\mathbf{x}}(k+1|k)$ a partir de la ecuación del estado actual $\hat{\mathbf{x}}(k|k)$ es:
+	
+		\begin{equation*}
+			\hat{\mathbf{x}}(k+1|k) = \mathbf{\Phi\hat{x}}(k|k) + \mathbf{\Gamma u}(k)
+		\end{equation*}
+	
+	\noindent El error del estado predicho es:
+	
+		\begin{align*}
+			\hat{\mathbf{e}}(k+1|k) 	&=	\mathbf{x}(k+1) - \hat{\mathbf{x}}(k+1|k)\\
+										&=	[\mathbf{\Phi x}(k) + \mathbf{\Gamma u}(k) + \mathbf{G w}(k)] - [\mathbf{\Phi}\hat{\mathbf{x}}(k) + \mathbf{\Gamma u}(k)] \\
+										&=	\mathbf{\Phi\hat{e}}(k|k) + \mathbf{G w}(k)
+		\end{align*}
+\end{document}

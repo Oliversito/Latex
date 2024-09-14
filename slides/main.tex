@@ -1,0 +1,534 @@
+\documentclass[10pt, aspectratio = 43,usenames,dvipsnames]{beamer}
+
+%----- beamer configuration -----%
+\usecolortheme{default}
+\useinnertheme{circles}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[page number]{}
+\setbeamersize{text margin left=5mm,text margin right=5mm} 
+\definecolor{sapgreen}{rgb}{0.31, 0.49, 0.16}
+\setbeamercolor{math text}{fg=sapgreen}
+%\usepackage[spanish]{babel}
+\newtheorem{definicion}{Definición}
+\newtheorem{ejemplo}{Ejemplo}
+\newtheorem{ejemplos}{Ejemplos}
+
+%----- packages -----%
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tikz-cd}
+\usepackage{braket}
+\usepackage{setspace}
+\usepackage{quiver}
+
+%----- references -----%
+\hypersetup{
+	colorlinks=true,
+	citecolor=magenta,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=cyan,
+	pdftitle={Overleaf Example},
+	pdfpagemode=FullScreen,
+}
+
+%----- comands -----%
+\newcommand{\coldef}[1]{\textcolor{Fuchsia}{#1}}
+\newcommand{\ca}[1]{\mathcal{#1}}
+
+%----- titlepage -----%
+\title{Teoría de Categorías y Estructuras de Restricción}
+
+\author{José Ramírez-Gómez}
+
+\institute{Universiad EAFIT}
+
+\date{Septiembre 2024}
+
+%--------------------------------------------------
+\begin{document}
+	\onehalfspacing
+	
+	\frame[plain]{\titlepage}
+	
+	\section{Introducción}
+	\begin{frame}[t]
+		\frametitle{¿Qué es la teoría de categorías?}
+		La teoría de categorías es una rama de las matemáticas que:
+		\begin{itemize}
+			\item Estudia conexiones entre diferentes ideas.
+			\item Permite entender el orden y las estructuras.
+			\item Se centra en las relaciones.
+			\item Permite ver bajo qué contexto las cosas son equivalentes.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\begin{figure}[h!]
+			\frametitle{¿Qué es la teoría de categorías?}
+			\begin{center}
+				\includegraphics[width= 0.9 \textwidth]{images/meme.jpg}
+				\caption{Broma}
+			\end{center}
+		\end{figure}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{Diagramas conmutativos}
+		\begin{block}{Idea}
+			Un diagrama conmutativo es un diagrama en el cual todos los caminos que comiencen y terminen en el mismo lugar determinan el mismo resultado.
+		\end{block}
+		\begin{block}{Ejemplo}
+			\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+				{\text{Marinilla}} \&\& {\text{Rionegro}} \\
+				\\
+				{\text{Guarne}} \&\& {\text{Medellín}}
+				\arrow[from=1-1, to=1-3]
+				\arrow[from=1-1, to=3-1]
+				\arrow[from=1-3, to=3-3]
+				\arrow[from=3-1, to=3-3]
+			\end{tikzcd}\]
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{¿Qué es una categoría?}
+		Informalmente, una categoría, que denotamos como $\mathcal{C}$, está formada por:
+		\begin{itemize}
+			\item \textbf{Objetos:} Pueden ser números, formas, estructuras matemáticas, o personas. Usualmente denotamos los objetos con letras mayúsculas $A,B,C,\ldots$.
+			\item \textbf{Flechas:} Denotan relación entre los objetos: ``menor que'', ``es madre de'', ``es isomorfo a''. Denotamos las flechas con diagramas $A\overset{f}{\longrightarrow}B$.
+			\item \textbf{Identidad:} Cada objeto está relacionado con él mismo. Es decir, para cada objeto $A$ hay una flecha $A\overset{1_{A}}{\longrightarrow}A$.
+			\item \textbf{Composición:} Para cada par de flechas $A\overset{f}{\longrightarrow}B\overset{g}{\longrightarrow}C$
+			debe existir una flecha $A\overset{h}{\longrightarrow}C$.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[t]
+		\frametitle{¿Qué es una categoría?}
+		\begin{itemize}
+			\item \textbf{Ley de identidades:} La flecha identidad asociada a cada objeto hace que los siguientes diagramas sean conmutativos
+			\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+				A \&\& A \&\& A \&\& B \\
+				\\
+				\&\& B \&\&\&\& B
+				\arrow["{1_{A}}", from=1-1, to=1-3]
+				\arrow["f"', dashed, from=1-1, to=3-3]
+				\arrow["f", from=1-3, to=3-3]
+				\arrow["f", from=1-5, to=1-7]
+				\arrow["f"', dashed, from=1-5, to=3-7]
+				\arrow["{1_{B}}", from=1-7, to=3-7]
+			\end{tikzcd}\]
+			\item \textbf{Ley asociativa:} Cada terna de flechas con la forma $A\overset{f}{\longrightarrow}B\overset{g}{\longrightarrow}C\overset{h}{\longrightarrow}D$ debe hacer que el siguiente diagrama sea conmutativo
+			\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+				A \&\& B \\
+				\\
+				\&\& C \&\& D
+				\arrow["f", from=1-1, to=1-3]
+				\arrow["{g\circ f}"', from=1-1, to=3-3]
+				\arrow["g", from=1-3, to=3-3]
+				\arrow["{h\circ g}", from=1-3, to=3-5]
+				\arrow["h", from=3-3, to=3-5]
+			\end{tikzcd}\]
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[t]
+		\frametitle{Ejemplo: Números naturales}
+		Partiendo de los números naturales, podemos construir una categoría de la siguiente forma
+		\begin{itemize}
+			\item \textbf{Objetos:} Números naturales $0,1,2,3,\ldots$.
+			\item \textbf{Flechas:} $A\longrightarrow B$ siempre y cuando $A\leq B$.
+			\item \textbf{Identidad:} Todo número natural es menor o igual que él mismo.
+		\end{itemize}
+		\begin{block}{¿Cómo se vería esta categoría?}
+			\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+				0 \&\& 1 \&\& 2 \&\& 3 \&\& \ldots
+				\arrow[from=1-1, to=1-1, loop, in=55, out=125, distance=10mm]
+				\arrow[from=1-1, to=1-3]
+				\arrow[curve={height=6pt}, from=1-1, to=1-3]
+				\arrow[curve={height=12pt}, from=1-1, to=1-5]
+				\arrow[curve={height=18pt}, from=1-1, to=1-7]
+				\arrow[curve={height=24pt}, from=1-1, to=1-9]
+				\arrow[from=1-3, to=1-3, loop, in=55, out=125, distance=10mm]
+				\arrow[from=1-3, to=1-5]
+				\arrow[from=1-5, to=1-5, loop, in=55, out=125, distance=10mm]
+				\arrow[from=1-5, to=1-7]
+				\arrow[from=1-7, to=1-7, loop, in=55, out=125, distance=10mm]
+				\arrow[from=1-7, to=1-9]
+			\end{tikzcd}\]
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{Ejemplo: $\mathsf{Set}$}
+		$\mathsf{Set}$ es la categoría cuyos objetos son conjuntos y sus flechas son funciones entre conjuntos. En esta categoría
+		\begin{itemize}
+			\item \textbf{Flecha identidad:} Es la función identidad
+			\begin{align*}
+				\mathbf{1}_{X}: X&\to X\\
+				x&\mapsto x
+			\end{align*}
+			\item \textbf{Composición:} Es la composición de funciones. Si $f:X\to Y$ y $g: Y\to Z$ son dos funciones, luego
+			\begin{align*}
+				g\circ f: X&\to Z\\
+				x&\mapsto g(f(x))
+			\end{align*}
+			es su función composición.
+		\end{itemize}
+	\end{frame}
+	
+	
+	\begin{frame}[t]
+		\frametitle{Otros ejemplos}
+		\begin{itemize}
+			\item $\mathsf{Vect}$: Los objetos son espacios vectoriales y los morfismos son transformaciones lineales.
+			\item $\mathsf{Pos}$: Los objetos son conjuntos parcialmente ordenados y los morfismos son funciones monótonas.
+			\item $\mathsf{Top}$: Los objetos son espacios topológicos y los morfismos son los mapeos continuos.
+			\item $\mathsf{Grp}$: Los objetos son grupos y los morfismos son homomorfismos de grupos.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}[t]
+		\frametitle{Restricción de una función}
+		\begin{block}{Función de inclusión}
+			Sea $A$ un conjunto. Todo subconjunto $S\subseteq A$ define una función de inclusión $S\hookrightarrow A$ que envía cada $s\in S$ en $s\in A$. 
+		\end{block}
+		\begin{figure}
+			\includegraphics[width=0.3 \textwidth]{images/inclusion.jpg}
+			\caption{Idea de la función de inclusión}
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}[t]
+		\frametitle{Restricción de una función}
+		\begin{block}{Definición}
+			Sea $f: X\to Y$ una función del conjunto $X$ en el conjunto $Y$. Si $W$ es un subconjunto de $X$, entonces la restricción de $f$ respecto a $A$ es la función
+			\begin{align*}
+				f|_{W}: W&\to Y
+			\end{align*}
+			dada por $f|_{W}(x)\mapsto f(x)$.
+		\end{block}
+		\begin{figure}
+			\includegraphics[width=0.4 \textwidth]{images/rest_conj.jpg}
+			\caption{Idea de la restricción de una función}
+		\end{figure}
+	\end{frame}
+	
+	\begin{frame}
+		\begin{center}
+		\LARGE¿Podemos extender esta idea a una categoría?
+		\end{center}
+	\end{frame}
+
+	\begin{frame}[t]
+		\frametitle{Categorías restrictivas}
+		\begin{block}{Restricción (categoría)}
+			Una restricción en una categoría $\mathcal{C}$ es un asignación de una flecha $\bar{f}: A\to A$ para cada flecha $f:A\to B$ tal que
+			\begin{itemize}
+				\item Para toda $f$ en $\mathcal{C}$, $f\circ\bar{f} = f$
+				\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+					A \&\&\& A \\
+					\\
+					\\
+					\&\&\& B
+					\arrow["{\bar{f}}", from=1-1, to=1-4]
+					\arrow["f"', from=1-1, to=4-4]
+					\arrow["f", from=1-4, to=4-4]
+				\end{tikzcd}\]
+			\end{itemize}
+		\end{block}
+	\end{frame}
+
+	\begin{frame}[t]
+		\frametitle{Categorías restrictivas}
+		\begin{itemize}
+			\item Para toda $f:A\to B$ y $g:A\to C$, $\bar{f}\circ\bar{g} = \bar{g}\circ\bar{f}$
+			\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+				A \&\& A \\
+				\\
+				A \&\& A
+				\arrow["{{\bar{f}}}", from=1-1, to=1-3]
+				\arrow["{{\bar{g}}}"', from=1-1, to=3-1]
+				\arrow["{{\bar{g}}}", from=1-3, to=3-3]
+				\arrow["{{\bar{f}}}"', from=3-1, to=3-3]
+			\end{tikzcd}\]
+			\item Para toda $f:A\to B$ y $g: A\to C$, $\overline{g\circ\bar{f}} = \bar{g}\circ\bar{f}$
+			\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+				A \&\& A \\
+				\\
+				\&\& A
+				\arrow["{\bar{f}}", from=1-1, to=1-3]
+				\arrow["{\overline{g\bar{f}}}"', from=1-1, to=3-3]
+				\arrow["{\bar{g}}", from=1-3, to=3-3]
+			\end{tikzcd}\]
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{Categorías restrictivas}
+		\begin{itemize}
+			\item Para toda $f:A\to B$ y $g:B\to C$, $\bar{g}\circ f = f\circ\overline{g\circ f}$
+			\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+				A \&\&\& B \\
+				\\
+				\\
+				A \&\&\& B
+				\arrow["f", from=1-1, to=1-4]
+				\arrow["{\overline{g\circ f}}"', from=1-1, to=4-1]
+				\arrow["{\bar{g}}", from=1-4, to=4-4]
+				\arrow["{f}"', from=4-1, to=4-4]
+			\end{tikzcd}\]
+		\end{itemize}
+		
+		\begin{block}{Categoría restrictiva}
+			Una categoría restrictiva es una categoría $\mathcal{C}$ junto a una estructura de restricción.
+		\end{block}
+	\end{frame}
+
+	\begin{frame}[t]
+		\frametitle{Categorías restrictivas}
+		\begin{block}{Notas}
+			\begin{itemize}
+				\item Es importante tener en cuenta que la estructura de restricción no es una propiedad de la categoría. Una categoría puede tener más de una estructura de restricción.
+				
+				\item Toda categoría tiene al menos una estructura de restricción. Si tomamos $\bar{f} = 1$ como le restricción de cada flecha obtenemos la estructura de restricción trivial.
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}
+		\begin{center}
+			\LARGE ¿Para qué sirve todo esto?
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}
+		\begin{center}
+			\huge¡GRACIAS!
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{¿Qué es una categoría?}
+		\begin{definicion}[Categoría]
+			Una categoría $\mathcal{C}$ está compuesta de:
+			\begin{itemize}
+				\item Una colección de objetos, $Obj(\mathcal{C})$, que denotaremos con las letras $A,B,C$, etc.
+				\item Una colección de flechas o morfismos, $Mor(\mathcal{C})$, que denotaremos con las letras $f,g,h$, etc.
+				\item Dos mapeos, $dom, cod: Mor(\mathcal{C}) \to \text{Obj}(\mathcal{C})$, que asignan a cada flecha $f$ su dominio $dom(f)$ y codominio $cod(f)$. Para una flecha $f$ con dominio $A$ y codominio $B$ escribiremos $f: A\to B$. Y para cada par de objetos $A,B$ definimos el \textcolor{red}{conjunto}
+				$$\mathcal{C}(A,B) := \{f\in Mor(\mathcal{C}) \;|\; f:A\to B\}$$
+				al que llamaremos \textit{Hom-set} y también escribiremos como $Hom_{\mathcal{C}}(A,B)$.
+			\end{itemize}
+			
+		\end{definicion}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{¿Qué es una categoría?}
+		\begin{definicion}[Categoría]
+			\begin{itemize}
+				\item Para cualquier terna de objetos $A,B,C$, la composición de morfismos,
+				$$C_{A,B,C}: \mathcal{C}(A,B)\times\mathcal{C}(B,C)\to \mathcal{C}(A,C).$$
+				Dados $f\in \mathcal{C}(A,B)$, $g\in \mathcal{C}(B,C)$, escribiremos $g\circ f$ para denotar $C_{A,B,C}(f,g)$.
+				\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+					A \&\& B \&\& C
+					\arrow["f", from=1-1, to=1-3]
+					\arrow["{g\circ f}"', curve={height=24pt}, from=1-1, to=1-5]
+					\arrow["g", from=1-3, to=1-5]
+				\end{tikzcd}\]
+				\item Para cada objeto $A$, una flecha identidad, $\textbf{1}_{A}: A\to A$.
+			\end{itemize}
+			
+		\end{definicion}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{¿Qué es una categoría?}
+		\begin{definicion}[Categoría]
+			Tales que se satisfagan los siguientes axiomas:
+			\begin{itemize}
+				\item Asociatividad: para cualesquiera morfismos $f:A\to B$, $g:B\to C$, $h:C\to D$, se cumple que $$h\circ(g\circ f) = (h\circ g)\circ f$$
+				\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+					A \&\&\& B \&\&\& C \&\&\& D
+					\arrow["f", from=1-1, to=1-4]
+					\arrow["{g\circ f}"', curve={height=24pt}, from=1-1, to=1-7]
+					\arrow["g", from=1-4, to=1-7]
+					\arrow["{h\circ g}", curve={height=-24pt}, from=1-4, to=1-10]
+					\arrow["h", from=1-7, to=1-10]
+				\end{tikzcd}\]
+			\end{itemize}
+		\end{definicion}
+	\end{frame}
+	
+	
+	\begin{frame}[t]
+		\frametitle{¿Qué es una categoría?}
+		\begin{definicion}[Categoría]
+			\begin{itemize}
+				\item Identidades: para cualquier morfismo $f:A\to B$ se cumple que $$f\circ \textbf{1}_{A} = f = \textbf{1}_{B}\circ f.$$
+				\[\begin{tikzcd}[ampersand replacement=\&,cramped]
+					A \&\&\& A \\
+					\\
+					\\
+					\&\&\& B \&\&\& B
+					\arrow["{1_{A}}", from=1-1, to=1-4]
+					\arrow["{f\circ 1_{A}}"', from=1-1, to=4-4]
+					\arrow["f", from=1-4, to=4-4]
+					\arrow["{1_{B}\circ f}", from=1-4, to=4-7]
+					\arrow["{1_{B}}"', from=4-4, to=4-7]
+				\end{tikzcd}\]
+			\end{itemize}
+		$\hfill\blacktriangle$
+		\end{definicion}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{Ejemplo: $\mathsf{Set}$}
+			$\mathsf{Set}$ es la categoría cuyos objetos son conjuntos y sus morfismos son funciones entre conjuntos. En esta categoría
+			\begin{itemize}
+				\item \textbf{Flecha identidad:} Es la función identidad
+				\begin{align*}
+					 \mathbf{1}_{X}: X&\to X\\
+					 x&\mapsto x
+				\end{align*}
+				\item \textbf{Composición:} Es la composición de funciones. Si $f:X\to Y$ y $g: Y\to Z$ son dos funciones, luego
+				\begin{align*}
+					g\circ f: X&\to Z\\
+					x&\mapsto g(f(x))
+				\end{align*}
+				es su función composición.
+			\end{itemize}
+	\end{frame}
+	
+	
+	\begin{frame}[t]
+		\frametitle{Otros ejemplos}
+		\begin{itemize}
+			\item $\mathsf{Vect}$: Los objetos son espacios vectoriales y los morfismos son transformaciones lineales.
+			\item $\mathsf{Pos}$: Los objetos son conjuntos parcialmente ordenados y los morfismos son funciones monótonas.
+			\item $\mathsf{Top}$: Los objetos son espacios topológicos y los morfismos son los mapeos continuos.
+			\item $\mathsf{Grp}$: Los objetos son grupos y morfismos son homomorfismos de grupos.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{¿Qué es un functor?}
+		\begin{definicion}[Functor]
+			Un functor $F: \mathcal{C}\to\mathcal{D}$ está dado por:
+			\begin{itemize}
+				\item Un mapeo de objetos, que asigna un objeto $FA$ en $\mathcal{D}$ a cada objeto $A$ de $\mathcal{C}$.
+				\item Un mapeo de flechas que asigna un morfismo $Ff:FA\to FB$ en $\mathcal{D}$ a cada morfismo $f:A\to B$ en $\mathcal{C}$ de tal forma que se preserven las identidades y composiciones, es decir: $F(g\circ f) = F(g)\circ F(f)$ y $F(1_{A}) = 1_{F(A)}$.	
+			\end{itemize}
+		$\hfill\blacktriangle$
+		\end{definicion}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{Ejemplo}
+			\begin{definicion}[Imagen directa]
+				Sea $f:X\to Y$ una función y $A\subseteq X$ un subconjunto de $X$, la imagen directa de $X$ bajo $f$ es el conjunto $f[X]\subseteq Y$ que tiene a todos los elementos de $Y$ iguales a $f(x)$ para alguna $x\in A$:
+				\begin{equation*}
+					f[A] := \{ y \in Y \;|\; y = f(x) \text{ para } x\in A\}
+				\end{equation*}
+				$\hfill\blacktriangle$
+			\end{definicion}
+			
+			\begin{block}{El functor potencia}
+				En $\mathsf{Set}$ podemos definir el (endo)functor potencia $\mathcal{P}:\mathsf{Set}\to\mathsf{Set}$ cuyo mapeo de objetos envía un objeto $X$ a su conjunto potencia $\mathcal{P}X$ y el mapeo de morfismos envía una función $f:X\to Y$ a la imagen directa de $S\subseteq X$ bajo $f$, $\mathcal{P}f:\mathcal{P}X\to\mathcal{P}Y$.
+			\end{block}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{¿Qué es una transformación natural?}
+		\begin{definicion}[Transformación natural]
+			Dados dos functores $S,T:\mathcal{C}\to\mathcal{D}$, una transformación natural $\alpha:S\Rightarrow T$ es un morfismo que asigna a cada objeto $c$ de $\mathcal{C}$ una flecha $\alpha_{c}: Sc\to Tc$ de $\mathcal{D}$ de tal forma que para cada flecha $f: c\to c'$ en $\mathcal{C}$ el siguiente diagrama 
+			\[\begin{tikzcd}[ampersand replacement=\&]
+				c \&\& Sc \&\&\& Tc \\
+				\\
+				\\
+				{c'} \&\& {Sc'} \&\&\& {Tc'}
+				\arrow["f"', from=1-1, to=4-1]
+				\arrow["{\alpha_{c}}", from=1-3, to=1-6]
+				\arrow["Sf"', from=1-3, to=4-3]
+				\arrow["Tf", from=1-6, to=4-6]
+				\arrow["{\alpha_{c'}}"', from=4-3, to=4-6]
+			\end{tikzcd}\]
+			es conmutativo.
+			$\hfill\blacktriangle$
+		\end{definicion}
+	\end{frame}
+
+	\begin{frame}[t]
+		\frametitle{¿Qué es una transformación natural?}
+		\begin{block}{Intuición}
+			Si pensamos en los functores $S$ y $T$ como ``proyecciones'' de la ``imagen'' de una categoría sobre otra, entonces una transformación natural es un conjunto de flechas que de cierta forma ``traduce'' una imagen en otra.
+		\end{block}
+	\end{frame}
+
+	\begin{frame}[t]
+		\frametitle{¿Qué es una mónada?}
+		\begin{block}{Broma 1.1}
+			Una mónada es un burrito.
+		\end{block}
+		\begin{definicion}[Mónada]
+			Una mónada $T = (T,\eta, \mu)$ en una categoría $\mathcal{C}$  consiste de un endofunctor $T: \mathcal{C}\to\mathcal{C}$ y dos transformaciones naturales $\eta: 1_{\mathcal{C}}\Rightarrow T$ y $\mu: T^{2}\Rightarrow T$ tales que los siguientes diagramas son conmutativos
+			\[\begin{tikzcd}[ampersand replacement=\&]
+				{T^{3}} \&\& {T^{2}} \&\& T \&\& {T^{2}} \&\& T \\
+				\\
+				{T^{2}} \&\& T \&\&\&\& T
+				\arrow["{T\mu}", from=1-1, to=1-3]
+				\arrow["{\mu T}"', from=1-1, to=3-1]
+				\arrow["\mu", from=1-3, to=3-3]
+				\arrow["{\eta T}", from=1-5, to=1-7]
+				\arrow["1"', from=1-5, to=3-7]
+				\arrow["\mu"{description}, from=1-7, to=3-7]
+				\arrow["{T\eta}"', from=1-9, to=1-7]
+				\arrow["1", from=1-9, to=3-7]
+				\arrow["\mu"', from=3-1, to=3-3]
+			\end{tikzcd}\]
+		$\hfill\blacktriangle$
+		\end{definicion}
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{Ejemplo}
+		Consideremos nuevamente el endofunctor potencia $\mathcal{P}: \mathsf{Set}\to\mathsf{Set}$. Sean $\eta_{Y}: Y\Rightarrow\mathcal{P}(Y)$ la operación de singleton 
+		
+		$$\eta_{Y}(y) = \{y\}$$
+		
+		y $\mu_{Y}:\mathcal{P}\mathcal{P}(Y)\Rightarrow\mathcal{P}(Y)$ la operación de unión 
+		
+		$$\mu_{Y}(\gamma) = \bigcup\gamma$$
+		
+		Como $\eta$ y $\mu$ son transformaciones naturales, entonces la terna $(\mathcal{P}, \{-\}, \bigcup)$ es una mónada en la categoría $\mathsf{Set}$.
+	\end{frame}
+	
+	\begin{frame}[t]
+		\frametitle{¿Qué es una categoría monoidal?}
+		\begin{definicion}[Categoría monoidal]
+			Una categoría monoidal $\mathbf{B} = \left\langle \mathbf{B}, \otimes, e, \alpha, \lambda, \rho\right\rangle$ es una categoría $\mathbf{B}$, un bifunctor $\otimes: \mathbf{B}\times\mathbf{B}\to\mathbf{B}$, un objeto $e\in\mathbf{B}$ y tres \textcolor{red}{transformaciones naturales} $\alpha, \lambda, \rho$. De forma explicita
+			\begin{equation*}
+				\alpha: a\otimes(b\otimes c)\cong(a\otimes b)\otimes c
+			\end{equation*}
+			
+			\[\begin{tikzcd}[ampersand replacement=\&,cramped,column sep=small]
+				{a\otimes(b\otimes(c\otimes d))} \&\& {(a\otimes b)\otimes(c\otimes d)} \&\& {((a\otimes b)\otimes c)\otimes d} \\
+				\\
+				{a\otimes((b\otimes c)\otimes d)} \&\&\&\& {(a\otimes(b\otimes c))\otimes d}
+				\arrow["\alpha", from=1-1, to=1-3]
+				\arrow["{1\otimes \alpha}"{description}, from=1-1, to=3-1]
+				\arrow["\alpha", from=1-3, to=1-5]
+				\arrow["\alpha"', from=3-1, to=3-5]
+				\arrow["{\alpha\otimes 1}"{description}, from=3-5, to=1-5]
+			\end{tikzcd}\]
+		\end{definicion}
+	\end{frame}
+	
+	\nocite{*}
+	\begin{frame}[t, allowframebreaks]
+		\frametitle{Referencias}
+		\bibliographystyle{abbrv}
+		\bibliography{references}
+	\end{frame}
+\end{document}
